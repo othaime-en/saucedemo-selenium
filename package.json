@@ -1,0 +1,33 @@
+{
+  "name": "saucedemo-automation",
+  "version": "1.0.0",
+  "description": "Comprehensive test suite for SauceDemo using Selenium WebDriver",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 30000",
+    "test:chrome": "BROWSER=chrome npm test",
+    "test:firefox": "BROWSER=firefox npm test",
+    "test:headless": "HEADLESS=true npm test",
+    "test:parallel": "mocha tests/**/*.test.js --timeout 30000 --parallel",
+    "lint": "eslint tests/ utils/ pages/",
+    "lint:fix": "eslint tests/ utils/ pages/ --fix"
+  },
+  "keywords": [],
+  "author": "othaimeen",
+  "license": "MIT",
+  "devDependencies": {
+    "allure-mocha": "^2.10.0",
+    "chai": "^4.3.10",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.53.0",
+    "geckodriver": "^4.2.1",
+    "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3",
+    "selenium-webdriver": "^4.15.0"
+  },
+  "dependencies": {
+    "chromedriver": "^139.0.3"
+  }
+}

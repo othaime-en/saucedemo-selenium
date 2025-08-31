@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Test output
+coverage/
+
+# VS Code settings
+.vscode/
+
+# Selenium WebDriver binaries
+chromedriver.log
+geckodriver.log
+
+# Misc
+*.tmp
+*.swp
