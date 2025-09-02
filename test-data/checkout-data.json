@@ -1,0 +1,78 @@
+{
+  "validCheckoutData": [
+    {
+      "testCase": "Standard US Customer",
+      "firstName": "John",
+      "lastName": "Doe", 
+      "postalCode": "12345",
+      "country": "US"
+    },
+    {
+      "testCase": "International Customer",
+      "firstName": "Anna",
+      "lastName": "Schmidt",
+      "postalCode": "10115",
+      "country": "DE"
+    },
+    {
+      "testCase": "Canadian Customer", 
+      "firstName": "Marie",
+      "lastName": "Dubois",
+      "postalCode": "K1A 0A6",
+      "country": "CA"
+    }
+  ],
+  
+  "invalidCheckoutData": [
+    {
+      "testCase": "Missing First Name",
+      "firstName": "",
+      "lastName": "Doe",
+      "postalCode": "12345",
+      "expectedError": "Error: First Name is required"
+    },
+    {
+      "testCase": "Missing Last Name", 
+      "firstName": "John",
+      "lastName": "",
+      "postalCode": "12345",
+      "expectedError": "Error: Last Name is required"
+    },
+    {
+      "testCase": "Missing Postal Code",
+      "firstName": "John", 
+      "lastName": "Doe",
+      "postalCode": "",
+      "expectedError": "Error: Postal Code is required"
+    }
+  ],
+
+  "shoppingScenarios": [
+    {
+      "scenario": "Single Item Purchase",
+      "products": ["Sauce Labs Backpack"],
+      "expectedSubtotal": 29.99
+    },
+    {
+      "scenario": "Multiple Items Purchase",
+      "products": [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bike Light", 
+        "Sauce Labs Bolt T-Shirt"
+      ],
+      "expectedSubtotal": 49.97
+    },
+    {
+      "scenario": "All Items Purchase",
+      "products": [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bike Light",
+        "Sauce Labs Bolt T-Shirt", 
+        "Sauce Labs Fleece Jacket",
+        "Sauce Labs Onesie",
+        "Test.allTheThings() T-Shirt (Red)"
+      ],
+      "expectedSubtotal": 129.94
+    }
+  ]
+}

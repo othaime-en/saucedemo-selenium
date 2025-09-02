@@ -1,0 +1,9 @@
+username,password,userType,expectedResult,description
+standard_user,secret_sauce,valid,success,"Standard user with normal access"
+locked_out_user,secret_sauce,locked,error,"User that has been locked out"
+problem_user,secret_sauce,problem,success,"User with UI problems but can login"
+performance_glitch_user,secret_sauce,performance,success,"User with performance issues but can login"
+invalid_user,wrong_password,invalid,error,"Non-existent user with wrong credentials"
+standard_user,wrong_password,invalid,error,"Valid user with wrong password"
+,secret_sauce,invalid,error,"Empty username with valid password"
+standard_user,,invalid,error,"Valid username with empty password"
