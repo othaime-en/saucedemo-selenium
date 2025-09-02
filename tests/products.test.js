@@ -146,4 +146,99 @@ describe("SauceDemo Products Page Functionality", function () {
 
     console.log("🎉 Product sorting test passed!");
   });
+
+  /**
+   * TEST 5: Price sorting functionality
+   * Tests numerical sorting (different from string sorting)
+   */
+  it("should sort products by price (low to high)", async function () {
+    console.log("\n🧪 TEST: Product sorting by price");
+
+    // Sort by price low to high
+    await productsPage.sortProducts("lohi");
+
+    // Get products after sorting
+    const products = await productsPage.getAllProducts();
+    const prices = products.map((p) => p.price);
+    console.log("💰 Prices after sorting:", prices);
+
+    // Verify prices are in ascending order
+    for (let i = 1; i < prices.length; i++) {
+      expect(prices[i]).to.be.at.least(prices[i - 1]);
+    }
+
+    console.log("🎉 Price sorting test passed!");
+  });
+
+  /**
+   * TEST 6: Find most and least expensive products
+   * Tests data analysis capabilities
+   */
+  it("should correctly identify most and least expensive products", async function () {
+    console.log("\n🧪 TEST: Price analysis");
+
+    // Get price extremes
+    const mostExpensive = await productsPage.getMostExpensiveProduct();
+    const cheapest = await productsPage.getCheapestProduct();
+
+    // Get all products for verification
+    const allProducts = await productsPage.getAllProducts();
+    const allPrices = allProducts.map((p) => p.price);
+
+    // Verify most expensive
+    const actualMaxPrice = Math.max(...allPrices);
+    expect(mostExpensive.price).to.equal(actualMaxPrice);
+
+    // Verify cheapest
+    const actualMinPrice = Math.min(...allPrices);
+    expect(cheapest.price).to.equal(actualMinPrice);
+
+    console.log(
+      `💰 Most expensive: ${mostExpensive.name} ($${mostExpensive.price})`
+    );
+    console.log(`💸 Cheapest: ${cheapest.name} ($${cheapest.price})`);
+    console.log("🎉 Price analysis test passed!");
+  });
+
+  /**
+   * TEST 7: Shopping cart navigation
+   * Tests navigation between pages
+   */
+  it("should navigate to cart page when cart icon is clicked", async function () {
+    console.log("\n🧪 TEST: Cart navigation");
+
+    // Add a product first (so cart isn't empty)
+    await productsPage.addProductToCartByName("Sauce Labs Backpack");
+
+    // Click cart to navigate
+    await productsPage.goToCart();
+
+    // Verify we're on cart page
+    const currentUrl = await productsPage.getCurrentUrl();
+    expect(currentUrl).to.include("cart.html");
+
+    console.log("🎉 Cart navigation test passed!");
+  });
+
+  /**
+   * TEST 8: Logout functionality
+   * Tests session management
+   */
+  it("should successfully logout and return to login page", async function () {
+    console.log("\n🧪 TEST: Logout functionality");
+
+    // Perform logout
+    await productsPage.logout();
+
+    // Verify we're back on login page
+    const currentUrl = await productsPage.getCurrentUrl();
+    expect(currentUrl).to.include("saucedemo.com");
+    expect(currentUrl).to.not.include("inventory.html");
+
+    // Verify login elements are present
+    const loginPageVisible = await loginPage.isOnLoginPage();
+    expect(loginPageVisible).to.be.true;
+
+    console.log("🎉 Logout test passed!");
+  });
 });
