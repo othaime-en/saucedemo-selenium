@@ -187,6 +187,188 @@ class CartPage extends BasePage {
 
     console.log("✅ Checkout form loaded");
   }
+
+  /**
+   * Fill out checkout information form
+   * @param {Object} checkoutInfo - Object with firstName, lastName, postalCode
+   */
+  async fillCheckoutInformation(checkoutInfo) {
+    console.log("📝 Filling checkout information...");
+
+    const { firstName, lastName, postalCode } = checkoutInfo;
+
+    await this.typeText(
+      this.locators.firstNameField,
+      firstName,
+      "first name field"
+    );
+    await this.typeText(
+      this.locators.lastNameField,
+      lastName,
+      "last name field"
+    );
+    await this.typeText(
+      this.locators.postalCodeField,
+      postalCode,
+      "postal code field"
+    );
+
+    console.log(
+      `✅ Filled checkout info: ${firstName} ${lastName}, ${postalCode}`
+    );
+  }
+
+  /**
+   * Continue to order review after filling checkout info
+   */
+  async continueToReview() {
+    console.log("➡️ Continuing to order review...");
+    await this.clickElement(this.locators.continueBtn, "continue button");
+
+    // Wait for summary page to load
+    await this.driver.wait(
+      until.elementLocated(this.locators.summaryContainer),
+      this.timeout,
+      "Order summary did not load"
+    );
+
+    console.log("✅ Order review page loaded");
+  }
+
+  /**
+   * Get order summary totals from review page
+   * @returns {Object} Object with subtotal, tax, and total amounts
+   */
+  async getOrderSummary() {
+    console.log("📊 Reading order summary...");
+
+    const subtotalElement = await this.findElement(
+      this.locators.subtotalLabel,
+      "subtotal"
+    );
+    const taxElement = await this.findElement(this.locators.taxLabel, "tax");
+    const totalElement = await this.findElement(
+      this.locators.totalLabel,
+      "total"
+    );
+
+    const subtotalText = await subtotalElement.getText();
+    const taxText = await taxElement.getText();
+    const totalText = await totalElement.getText();
+
+    // Parse amounts (format: "Item total: $29.99")
+    const subtotal = parseFloat(subtotalText.match(/\$([\d.]+)/)[1]);
+    const tax = parseFloat(taxText.match(/\$([\d.]+)/)[1]);
+    const total = parseFloat(totalText.match(/\$([\d.]+)/)[1]);
+
+    const summary = {
+      subtotal: subtotal,
+      tax: tax,
+      total: total,
+      subtotalText: subtotalText,
+      taxText: taxText,
+      totalText: totalText,
+    };
+
+    console.log(
+      `💰 Order Summary - Subtotal: $${subtotal}, Tax: $${tax}, Total: $${total}`
+    );
+    return summary;
+  }
+
+  /**
+   * Complete the order (click finish)
+   */
+  async finishOrder() {
+    console.log("🎯 Completing order...");
+    await this.clickElement(this.locators.finishBtn, "finish button");
+
+    // Wait for completion page
+    await this.driver.wait(
+      until.elementLocated(this.locators.completeHeader),
+      this.timeout,
+      "Order completion page did not load"
+    );
+
+    console.log("✅ Order completed successfully!");
+  }
+
+  /**
+   * Get order completion message
+   * @returns {string} Completion message text
+   */
+  async getCompletionMessage() {
+    const headerElement = await this.findElement(
+      this.locators.completeHeader,
+      "completion header"
+    );
+    const textElement = await this.findElement(
+      this.locators.completeText,
+      "completion text"
+    );
+
+    const header = await headerElement.getText();
+    const text = await textElement.getText();
+
+    console.log(`🎉 Order completion: ${header}`);
+    return { header, text };
+  }
+
+  /**
+   * Complete full checkout process
+   * This is a high-level method that combines multiple steps
+   * @param {Object} checkoutInfo - Checkout form data
+   * @returns {Object} Order summary with totals
+   */
+  async completeCheckout(checkoutInfo) {
+    console.log("🛍️ Starting complete checkout process...");
+
+    // Step 1: Proceed to checkout
+    await this.proceedToCheckout();
+
+    // Step 2: Fill information
+    await this.fillCheckoutInformation(checkoutInfo);
+
+    // Step 3: Continue to review
+    await this.continueToReview();
+
+    // Step 4: Get summary for validation
+    const orderSummary = await this.getOrderSummary();
+
+    // Step 5: Complete order
+    await this.finishOrder();
+
+    // Step 6: Verify completion
+    const completion = await this.getCompletionMessage();
+
+    console.log("🎉 Full checkout process completed successfully!");
+
+    return {
+      orderSummary: orderSummary,
+      completion: completion,
+    };
+  }
+
+  /**
+   * Return to shopping from cart
+   */
+  async continueShopping() {
+    console.log("🔄 Continuing shopping...");
+    await this.clickElement(
+      this.locators.continueShoppingBtn,
+      "continue shopping button"
+    );
+    console.log("✅ Returned to products page");
+  }
+
+  /**
+   * Check if cart is empty
+   * @returns {boolean} True if cart has no items
+   */
+  async isCartEmpty() {
+    const cartItems = await this.getCartItems();
+    return cartItems.length === 0;
+  }
 }
 
 export default CartPage;
