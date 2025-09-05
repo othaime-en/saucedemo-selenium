@@ -262,4 +262,127 @@ describe("SauceDemo Shopping Cart and Checkout", function () {
 
     console.log("🎉 Complete end-to-end workflow test passed!");
   });
+
+  /**
+   * TEST 6: Checkout form validation
+   * Tests negative scenarios with invalid checkout data
+   */
+  it("should validate checkout form fields correctly", async function () {
+    console.log("\n🧪 TEST: Checkout form validation");
+
+    // Add a product so we can get to checkout
+    await productsPage.addProductToCartByName("Sauce Labs Backpack");
+    await productsPage.goToCart();
+
+    // Proceed to checkout
+    await cartPage.proceedToCheckout();
+
+    // Get invalid checkout data
+    const checkoutData = await testDataReader.getCheckoutTestData();
+    const invalidData = checkoutData.invalidCheckoutData[0]; // Missing first name
+
+    console.log(`🧪 Testing validation: ${invalidData.testCase}`);
+
+    // Fill form with invalid data
+    await cartPage.fillCheckoutInformation({
+      firstName: invalidData.firstName,
+      lastName: invalidData.lastName,
+      postalCode: invalidData.postalCode,
+    });
+
+    // Try to continue (this should show validation error)
+    await cartPage.clickElement(
+      cartPage.locators.continueBtn,
+      "continue button"
+    );
+
+    // Check for error message (implementation depends on SauceDemo's validation)
+    // Note: This is a basic check - real implementation might need more specific validation
+    const currentUrl = await cartPage.getCurrentUrl();
+
+    // If validation works, we should still be on checkout info page
+    expect(currentUrl).to.include("checkout-step-one.html");
+
+    console.log("🎉 Checkout form validation test passed!");
+  });
+
+  /**
+   * TEST 7: Cart persistence across navigation
+   */
+  it("should maintain cart state when navigating between pages", async function () {
+    console.log("\n🧪 TEST: Cart state persistence");
+
+    // Add items to cart
+    await productsPage.addProductToCartByName("Sauce Labs Backpack");
+
+    // Verify cart count
+    let cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(1);
+
+    // Navigate to cart
+    await productsPage.goToCart();
+
+    // Navigate back to products
+    await cartPage.continueShopping();
+
+    // Verify cart count is still maintained
+    cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(1);
+
+    // Add another item
+    await productsPage.addProductToCartByName("Sauce Labs Bike Light");
+
+    // Verify count increased
+    cartCount = await productsPage.getCartItemCount();
+    expect(cartCount).to.equal(2);
+
+    console.log("🎉 Cart persistence test passed!");
+  });
+
+  /**
+   * TEST 8: Data-driven shopping scenarios
+   */
+  it("should handle multiple shopping scenarios from test data", async function () {
+    console.log("\n🧪 TEST: Multiple shopping scenarios");
+
+    const scenarios = await testDataReader.getShoppingScenarios();
+
+    // Test the "Multiple Items Purchase" scenario
+    const scenario = scenarios.find(
+      (s) => s.scenario === "Multiple Items Purchase"
+    );
+    expect(scenario).to.not.be.undefined;
+
+    console.log(`🛍️ Testing: ${scenario.scenario}`);
+    console.log(`📦 Products: ${scenario.products.join(", ")}`);
+
+    // Add all products from scenario
+    await productsPage.addMultipleProductsToCart(scenario.products);
+
+    // Go to cart and verify
+    await productsPage.goToCart();
+
+    const cartItems = await cartPage.getCartItems();
+    expect(cartItems).to.have.length(scenario.products.length);
+
+    // Verify all expected products are in cart
+    const cartProductNames = cartItems.map((item) => item.name);
+    for (const expectedProduct of scenario.products) {
+      expect(cartProductNames).to.include(expectedProduct);
+    }
+
+    // Verify subtotal calculation
+    const calculatedSubtotal = await cartPage.calculateExpectedSubtotal();
+    const tolerance = 0.01;
+    expect(
+      Math.abs(calculatedSubtotal - scenario.expectedSubtotal)
+    ).to.be.below(tolerance);
+
+    console.log(
+      `💰 Subtotal verification: Expected ${
+        scenario.expectedSubtotal
+      }, Calculated ${calculatedSubtotal.toFixed(2)}`
+    );
+    console.log("🎉 Shopping scenario test passed!");
+  });
 });
