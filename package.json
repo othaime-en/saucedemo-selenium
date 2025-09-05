@@ -6,6 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha tests/**/*.test.js --timeout 30000",
+    "test:cart": "mocha tests/cart.test.js --timeout 30000",
+    "test:login": "mocha tests/login.test.js --timeout 30000",
+    "test:products": "mocha tests/products.test.js --timeout 30000",
     "test:chrome": "BROWSER=chrome npm test",
     "test:firefox": "BROWSER=firefox npm test",
     "test:headless": "HEADLESS=true npm test",
@@ -13,7 +16,7 @@
     "lint": "eslint tests/ utils/ pages/",
     "lint:fix": "eslint tests/ utils/ pages/ --fix"
   },
-  "keywords": [],
+  "keywords": ["selenium", "automation", "testing", "qa", "javascript", "mocha"],
   "author": "othaimeen",
   "license": "MIT",
   "devDependencies": {
