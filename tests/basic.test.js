@@ -1,14 +1,17 @@
 import { expect } from "chai";
 import WebDriverManager from "../utils/WebDriverManager.js";
+import ScreenshotUtils from "../utils/ScreenshotUtils.js";
 
 describe("Basic SauceDemo Connection Test", function () {
   let driverManager;
   let driver;
+  let screenshotUtils;
 
   beforeEach(async function () {
     console.log("\n🧪 Setting up test...");
     driverManager = new WebDriverManager();
-    driver = await driverManager.createDriver("chrome", false); // visible browser for learning
+    driver = await driverManager.createDriver("chrome", false);
+    screenshotUtils = new ScreenshotUtils(driver);
   });
 
   afterEach(async function () {
@@ -42,6 +45,7 @@ describe("Basic SauceDemo Connection Test", function () {
 
     console.log("✅ All login elements are visible and present");
     console.log("🎉 Test completed successfully!");
+    await screenshotUtils.captureSuccess("Basic_SauceDemo_Connection_Test");
   });
 
   it("should display the correct login placeholder texts", async function () {
@@ -62,5 +66,6 @@ describe("Basic SauceDemo Connection Test", function () {
     expect(passwordPlaceholder).to.equal("Password");
 
     console.log("✅ Placeholder text verification passed");
+    await screenshotUtils.captureSuccess("Login_Placeholder_Texts_Test");
   });
 });
