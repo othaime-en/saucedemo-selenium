@@ -9,6 +9,7 @@
     "test:cart": "mocha tests/cart.test.js --timeout 30000",
     "test:login": "mocha tests/login.test.js --timeout 30000",
     "test:products": "mocha tests/products.test.js --timeout 30000",
+    "test:e2e": "mocha tests/enhanced-e2e.test.js --timeout 70000",
     "test:chrome": "BROWSER=chrome npm test",
     "test:firefox": "BROWSER=firefox npm test",
     "test:headless": "HEADLESS=true npm test",
