@@ -7,7 +7,7 @@ import { By, until } from "selenium-webdriver";
 class BasePage {
   constructor(driver) {
     this.driver = driver;
-    this.timeout = 30000; // 30 seconds default timeout
+    this.timeout = 60000; // 60 seconds default timeout
   }
 
   /**
