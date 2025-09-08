@@ -59,7 +59,7 @@ jobs:
       - name: 🧪 Run Test Suite
         run: |
           echo "Running tests with Node.js ${{ matrix.node-version }}"
-          npm test
+          npm test test:e2e
         env:
           BROWSER: chrome
           HEADLESS: true
