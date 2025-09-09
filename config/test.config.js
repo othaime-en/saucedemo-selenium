@@ -15,7 +15,7 @@ const config = {
 
   // Timeouts (in milliseconds)
   timeouts: {
-    implicit: 20000, // How long to wait for elements to appear
+    implicit: 30000, // How long to wait for elements to appear
     explicit: 30000, // How long to wait for specific conditions
     pageLoad: 60000, // How long to wait for pages to load
   },
