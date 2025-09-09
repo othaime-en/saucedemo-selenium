@@ -198,7 +198,63 @@ describe("🧪 Enhanced SauceDemo E2E Test Suite", function () {
    * ENHANCED TEST 2: Data-Driven User Experience Testing
    * Tests different user personas and their experiences
    */
-  it("should handle different user personas with appropriate experiences", async function () {});
+  it("should handle different user personas with appropriate experiences", async function () {
+    const testName = "User Persona Testing";
+    console.log(`\n🎯 ENHANCED TEST: ${testName}`);
+
+    try {
+      const validUsers = await testDataReader.getValidUsers();
+      console.log(`👥 Testing ${validUsers.length} different user personas`);
+
+      // Test with performance_glitch_user (known to be slow)
+      const performanceUser = validUsers.find(
+        (user) => user.username === "performance_glitch_user"
+      );
+
+      if (performanceUser) {
+        console.log(
+          `🐌 Testing performance user: ${performanceUser.description}`
+        );
+
+        await loginPage.open();
+        await screenshotUtils.captureStep(
+          testName,
+          "performance-user-login-start"
+        );
+
+        const startTime = Date.now();
+        await loginPage.login(
+          performanceUser.username,
+          performanceUser.password
+        );
+        const loginDuration = Date.now() - startTime;
+
+        await screenshotUtils.captureStep(
+          testName,
+          "performance-user-login-complete"
+        );
+
+        console.log(`⏱️ Performance user login took: ${loginDuration}ms`);
+
+        // Verify login succeeded despite performance issues
+        const onProductsPage = await productsPage.isOnProductsPage();
+        expect(onProductsPage).to.be.true;
+
+        // Document performance characteristics
+        if (loginDuration > 5000) {
+          console.log("⚠️ Performance user exhibited expected slow behavior");
+        } else {
+          console.log("ℹ️ Performance user was faster than expected");
+        }
+
+        console.log("✅ Performance user persona test completed");
+      }
+    } catch (error) {
+      console.error("❌ User persona test failed:", error.message);
+      await screenshotUtils.captureFailureEvidence(testName, error);
+      throw error;
+    }
+  });
 
   /**
    * ENHANCED TEST 3: Comprehensive Error Handling and Recovery
