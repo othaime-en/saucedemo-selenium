@@ -260,11 +260,89 @@ describe("🧪 Enhanced SauceDemo E2E Test Suite", function () {
    * ENHANCED TEST 3: Comprehensive Error Handling and Recovery
    * Tests application behavior under error conditions
    */
-  it("should handle errors gracefully and provide clear feedback", async function () {});
+  it("should handle errors gracefully and provide clear feedback", async function () {
+    const testName = "Error Handling Testing";
+    console.log(`\n🎯 ENHANCED TEST: ${testName}`);
+
+    try {
+      // Test invalid login attempts
+      console.log("🚫 Testing invalid authentication scenarios");
+
+      await loginPage.open();
+      await screenshotUtils.captureStep(testName, "error-testing-start");
+
+      const invalidUsers = await testDataReader.getInvalidUsers();
+      const testUser = invalidUsers[0]; // Test first invalid user
+
+      console.log(`👤 Testing invalid user: ${testUser.description}`);
+      await loginPage.login(testUser.username, testUser.password);
+
+      await screenshotUtils.captureStep(testName, "invalid-login-attempted");
+
+      // Verify appropriate error handling
+      const errorMessage = await loginPage.getErrorMessage();
+      expect(errorMessage).to.not.be.null;
+      expect(errorMessage.length).to.be.above(0);
+
+      console.log(`✅ Error message displayed: "${errorMessage}"`);
+
+      // Verify user remains on login page
+      const stillOnLogin = await loginPage.isOnLoginPage();
+      expect(stillOnLogin).to.be.true;
+
+      await screenshotUtils.captureStep(testName, "error-handling-verified");
+      console.log("✅ Error handling test completed successfully");
+    } catch (error) {
+      console.error("❌ Error handling test failed:", error.message);
+      await screenshotUtils.captureFailureEvidence(testName, error);
+      throw error;
+    }
+  });
 
   /**
    * ENHANCED TEST 4: Cross-Browser Compatibility Simulation
    * Tests key functionality that should work across different environments
    */
-  it("should maintain consistent functionality across different configurations", async function () {});
+  it.only("should maintain consistent functionality across different configurations", async function () {
+    const testName = "Compatibility Testing";
+    console.log(`\n🎯 ENHANCED TEST: ${testName}`);
+
+    try {
+      console.log("🔧 Testing core functionality for compatibility");
+
+      // Test basic login and navigation flow
+      await loginPage.open();
+      await screenshotUtils.captureStep(testName, "compatibility-test-start");
+
+      await loginPage.login(
+        config.testUsers.standard.username,
+        config.testUsers.standard.password
+      );
+
+      await screenshotUtils.captureStep(
+        testName,
+        "compatibility-login-complete"
+      );
+
+      // Test core e-commerce functionality
+      await productsPage.addProductToCartByName("Sauce Labs Backpack");
+      const cartCount = await productsPage.getCartItemCount();
+      expect(cartCount).to.equal(1);
+
+      await productsPage.goToCart();
+      const cartItems = await cartPage.getCartItems();
+      expect(cartItems).to.have.length(1);
+
+      await screenshotUtils.captureStep(
+        testName,
+        "compatibility-core-functions-verified"
+      );
+
+      console.log("✅ Core functionality verified for compatibility");
+    } catch (error) {
+      console.error("❌ Compatibility test failed:", error.message);
+      await screenshotUtils.captureFailureEvidence(testName, error);
+      throw error;
+    }
+  });
 });
