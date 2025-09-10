@@ -24,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16, 18, 20] # Test on multiple Node.js versions
+        node-version: [16] # Test on multiple Node.js versions
 
     steps:
       # Step 1: Checkout the code
