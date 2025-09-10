@@ -13,7 +13,7 @@ class WebDriverManager {
    * @param {boolean} headless - Run browser without GUI (faster for CI/CD)
    * @returns {WebDriver} Configured WebDriver instance
    */
-  async createDriver(browserName = "chrome", headless = false) {
+  async createDriver(browserName, headless = false) {
     try {
       console.log(`🚀 Starting ${browserName} browser...`);
 
@@ -35,7 +35,7 @@ class WebDriverManager {
           .forBrowser(Browser.CHROME)
           .setChromeOptions(chromeOptions)
           .build();
-      } else if (browserName.toLowercase() === "firefox") {
+      } else if (browserName.toLowerCase() === "firefox") {
         const firefoxOptions = new firefox.Options();
 
         if (headless) {
@@ -47,7 +47,7 @@ class WebDriverManager {
 
         this.driver = await new Builder()
           .forBrowser(Browser.FIREFOX)
-          .addArguments(firefoxOptions)
+          .setFirefoxOptions(firefoxOptions)
           .build();
       } else {
         throw new Error(`Unsupported browser: ${browserName}`);
