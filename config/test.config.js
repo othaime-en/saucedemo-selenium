@@ -1,6 +1,7 @@
-// Test configuration - centralized settings for our test suite
+import dotenv from "dotenv";
+dotenv.config();
+
 const config = {
-  // Base URL for the application under test
   baseUrl: "https://www.saucedemo.com",
 
   // Browser settings
