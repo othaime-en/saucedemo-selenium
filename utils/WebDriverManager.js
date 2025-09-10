@@ -1,4 +1,4 @@
-import { Builder, Browser, TouchSequence } from "selenium-webdriver";
+import { Builder, Browser } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 import firefox from "selenium-webdriver/firefox.js";
 
