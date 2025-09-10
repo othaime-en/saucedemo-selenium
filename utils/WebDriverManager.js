@@ -1,5 +1,6 @@
-import { Builder, Browser } from "selenium-webdriver";
+import { Builder, Browser, TouchSequence } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
+import firefox from "selenium-webdriver/firefox.js";
 
 class WebDriverManager {
   constructor() {
@@ -34,9 +35,22 @@ class WebDriverManager {
           .forBrowser(Browser.CHROME)
           .setChromeOptions(chromeOptions)
           .build();
+      } else if (browserName.toLowercase() === "firefox") {
+        const firefoxOptions = new firefox.Options();
+
+        if (headless) {
+          firefoxOptions.addArguments("--headless");
+        }
+
+        firefoxOptions.addArguments("--width=1920");
+        firefoxOptions.addArguments("--height=1080");
+
+        this.driver = await new Builder()
+          .forBrowser(Browser.FIREFOX)
+          .addArguments(firefoxOptions)
+          .build();
       } else {
-        // Firefox support (we'll add this later)
-        this.driver = await new Builder().forBrowser(Browser.FIREFOX).build();
+        throw new Error(`Unsupported browser: ${browserName}`);
       }
 
       // Set implicit wait - WebDriver will wait up to 10 seconds for elements to appear
