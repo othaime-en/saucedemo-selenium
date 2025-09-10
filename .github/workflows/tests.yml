@@ -124,7 +124,7 @@ jobs:
           HEADLESS: true
 
       - name: 📸 Upload Browser-Specific Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cross-browser-artifacts-${{ matrix.browser }}
