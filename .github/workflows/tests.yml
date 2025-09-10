@@ -83,3 +83,55 @@ jobs:
           name: test-results-node-${{ matrix.node-version }}
           path: test-results.xml
           retention-days: 30
+
+                  with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: test-results.xml
+          retention-days: 30
+
+  # Job 2: Cross-browser testing (Chrome and Firefox)
+  cross-browser-test:
+    name: 🌐 Cross-Browser Testing
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+        
+    steps:
+      - name: 📦 Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: 🚀 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: 📥 Install Dependencies
+        run: npm ci
+        
+      # Setup different browsers based on matrix
+      - name: 🌐 Setup Chrome
+        if: matrix.browser == 'chrome'
+        uses: browser-actions/setup-chrome@latest
+        
+      - name: 🦊 Setup Firefox
+        if: matrix.browser == 'firefox'
+        uses: browser-actions/setup-geckodriver@latest
+        
+      - name: 🧪 Run Cross-Browser Tests
+        run: |
+          echo "Running tests on ${{ matrix.browser }}"
+          npm test
+        env:
+          BROWSER: ${{ matrix.browser }}
+          HEADLESS: true
+          
+      - name: 📸 Upload Browser-Specific Artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cross-browser-artifacts-${{ matrix.browser }}
+          path: reports/
+          retention-days: 7
